@@ -1,0 +1,4 @@
+(macro hello () hello)
+(macro world () -world)
+
+(hello)(world)
