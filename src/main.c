@@ -57,12 +57,16 @@ int main(int argc, char **argv)
     fread(buffer, fileSize, 1, fd);
     
     // first tokenize input
-    uba* tokens = runTokenizer(buffer, fileSize);
-    printTokens(tokens);
+    uba* tokens = NULL;
+    if(!runTokenizer(buffer, fileSize, &tokens))
+    {
+        // We got an error tokenizing that has been reported
+        return 1;
+    }
+    //printTokens(tokens);
 
     // Free the file buffer since it is no longer useful
     free(buffer);
-    return 0; // TODO REMOVE 
 
     // After we tokenize the input we perform checks to be able to parse correctly.
     // Verify valid list code
@@ -79,12 +83,8 @@ int main(int argc, char **argv)
     size_t dummy = 0;
     uba* parseTree = parse(tokens, &dummy);
 
-    // Perform checks on the parse tree to verify that the grammar is correct
-    // TODO
-
     // Perform checks to determine that the calls being made are valid
     // TODO
-
 
     // Now that we parsed it so lets run it
     interpret(parseTree);

@@ -27,6 +27,7 @@ bool parenCheck(uba* tokens, size_t* lineNumber)
     }
     if(result > 0)
     {
+        *lineNumber = -1;
         return false;
     }
     return true;

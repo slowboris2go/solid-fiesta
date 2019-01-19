@@ -78,7 +78,7 @@ void interpretList(uba* environment, uba* list)
 
     if(size == 0)
     {
-        printf("Error encountered7\n");
+        printf("Error encountered!\n");
     }
     else
     {
@@ -104,7 +104,7 @@ void interpret(uba* parseTree)
     for(size_t i = 0; i < size; ++i)
     {
         parseEntry* entry = ubaIndex(parseTree, i);
-        if(entry->type = LITERAL)
+        if(entry->type == LITERAL)
         {
             printf("Error occured1\n");
             return;

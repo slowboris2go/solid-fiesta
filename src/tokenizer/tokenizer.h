@@ -25,6 +25,13 @@ typedef enum
     TOKEN_NUM_STATES
 } TokenizerStateEnum;
 
+// Indicates error tokenizing
+typedef enum
+{
+    TOKEN_ERROR_NONE,
+    TOKEN_ERROR_UNCLOSED_STRING
+} TokenizerErrorEnum;
+
 // All state variables needed to run the tokenizer
 typedef struct T
 {
@@ -37,6 +44,7 @@ typedef struct T
     char* tokenStart; // Index to the start of the token
     size_t tokenSize; // Current size of token
     uba* result; // Pointer to resulting token stream.
+    TokenizerErrorEnum errorStatus; // Indicates whether there was an error parsing or not.
 } Tokenizer;
 
 char* makeStringCopy(char* source, size_t length);
@@ -45,4 +53,4 @@ bool isWhitespace(char c);
 
 bool isParens(char c);
 
-uba* runTokenizer(char* code, size_t codeLength);
+bool runTokenizer(char* code, size_t codeLength, uba** tokens);

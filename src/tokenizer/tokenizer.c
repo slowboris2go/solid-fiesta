@@ -45,6 +45,7 @@ void discardHandler(Tokenizer* tokenizer)
         if(tokenizer->index >= tokenizer->codeSize)
         {
             tokenizer->state = TOKEN_DONE;
+            tokenizer->errorStatus = TOKEN_ERROR_NONE;
             break;
         }
 
@@ -101,6 +102,7 @@ void readHandler(Tokenizer* tokenizer)
         if(tokenizer->index >= tokenizer->codeSize)
         {
             tokenizer->state = TOKEN_DONE;
+            tokenizer->errorStatus = TOKEN_ERROR_NONE;
             // Add token we were building up
             char* tokenString = makeStringCopy(tokenizer->tokenStart, tokenizer->tokenSize);
             TokenType* token = makeToken(tokenString, tokenizer->lineNumber);
@@ -172,7 +174,8 @@ void stringHandler(Tokenizer* tokenizer)
         if(tokenizer->index >= tokenizer->codeSize)
         {
             tokenizer->state = TOKEN_DONE;
-            // TODO signal error            
+            tokenizer->errorStatus = TOKEN_ERROR_UNCLOSED_STRING;
+            printf("%lu: Unclosed quotation mark\n", tokenizer->lineNumber);           
             break;
         }
 
@@ -200,6 +203,15 @@ void stringHandler(Tokenizer* tokenizer)
             break;
         }
 
+        // if we get a new line don't forget to increment the line number
+        if(currentChar == '\n')
+        {
+            tokenizer->lineNumber++;
+            tokenizer->tokenSize++;
+            tokenizer->index++;
+            break;
+        }
+
         // Read a normal character so increment index and token size
         tokenizer->tokenSize++;
         tokenizer->index++;
@@ -215,7 +227,8 @@ void stringIgnoreHandler(Tokenizer* tokenizer)
         if(tokenizer->index >= tokenizer->codeSize)
         {
             tokenizer->state = TOKEN_DONE;
-            // TODO signal error            
+            tokenizer->errorStatus = TOKEN_ERROR_UNCLOSED_STRING;
+            printf("%lu: Unclosed quotation mark\n", tokenizer->lineNumber);           
             break;
         }
 
@@ -227,7 +240,7 @@ void stringIgnoreHandler(Tokenizer* tokenizer)
 
 
 // State machine used to process the characters into tokens
-uba* runTokenizer(char* code, size_t size)
+bool runTokenizer(char* code, size_t size, uba** tokens)
 {
     Tokenizer tokenizer = {0};
     tokenizer.result = ubaNew(10);
@@ -249,6 +262,13 @@ uba* runTokenizer(char* code, size_t size)
         tokenizer.stateHandler[tokenizer.state](&tokenizer);
     }
 
-    return tokenizer.result;
+    *tokens = tokenizer.result;
+
+    // Check for errors
+    if(tokenizer.errorStatus == TOKEN_ERROR_NONE)
+    {
+        return true;
+    }
+    return false;
 }
 
