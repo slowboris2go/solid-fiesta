@@ -5,7 +5,6 @@
 #include<stdlib.h>
 #include<string.h>
 
-#include "parser/parser.h"
 #include "tokenizer/tokenizer.h"
 #include "interpreter/interpreter.h"
 
@@ -16,23 +15,6 @@ void printTokens(uba* tokens)
     {
         TokenType* token = ubaIndex(tokens, i);
         printf("%s\n", token->token);
-    }
-}
-
-// debug function
-void printParseTree(uba* parseTree)
-{
-    for(size_t i = 0; i < ubaSize(parseTree); ++i)
-    {
-        parseEntry* entry = ubaIndex(parseTree, i);
-        if(entry->type == LITERAL)
-        {
-            printf("%s\n", entry->literal);
-        }
-        else
-        {
-            printParseTree(entry->list);
-        }
     }
 }
 
@@ -68,26 +50,8 @@ int main(int argc, char **argv)
     // Free the file buffer since it is no longer useful
     free(buffer);
 
-    // After we tokenize the input we perform checks to be able to parse correctly.
-    // Verify valid list code
-    size_t lineNumber = 0;
-     if(!parenCheck(tokens, &lineNumber))
-     {
-         printf("%ld: Mismatched Parentheses\n", lineNumber);
-         return 1;
-     }
-
-
-
-    // second turn tokens into a parse tree
-    size_t dummy = 0;
-    uba* parseTree = parse(tokens, &dummy);
-
-    // Perform checks to determine that the calls being made are valid
-    // TODO
-
     // Now that we parsed it so lets run it
-    interpret(parseTree);
+    interpret(tokens);
 
     return 0;
 }

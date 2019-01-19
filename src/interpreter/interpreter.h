@@ -1,14 +1,16 @@
+#pragma once
+
 // Contains structures and function declarations
 #include "../uba/uba.h"
+#include "../tokenizer/tokenizer.h"
+#include <stdint.h>
+#include <stdio.h>
 
-
-// The environment is a uba of pairs of function name and code output
-
-// Contains meta data to execute function
-typedef struct
+// The state of the interpreter
+typedef struct 
 {
-    char* name;
-    char* returnValue;
-} functionMeta;
+    size_t programIndex;
+} InterpreterState;
+
 
 void interpret(uba* parseTree);

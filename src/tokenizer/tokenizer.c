@@ -16,13 +16,7 @@ bool isWhitespace(char c)
     return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 }
 
-// Special exemption is made for parenthesis
-bool isParens(char c)
-{
-    return c == '(' || c == ')';
-}
-
-// Another exemption is made for double quotes for strings
+// Exemption is made for double quotes for strings
 bool isDoubleQuotes(char c)
 {
     return c == '"';
@@ -59,18 +53,6 @@ void discardHandler(Tokenizer* tokenizer)
                 tokenizer->lineNumber++;
             }
             tokenizer->index++;
-            break;
-        }
-
-        // We get the special singleton tokens "(" and ")"
-        if(isParens(currentChar))
-        {
-            char* tokenStart = &tokenizer->code[tokenizer->index];
-            size_t tokenSize = 1;
-            char* tokenString = makeStringCopy(tokenStart, tokenSize);
-            TokenType* token = makeToken(tokenString, tokenizer->lineNumber);
-            ubaAdd(tokenizer->result, token);
-            tokenizer->index++; // This is to avoid infinite loops
             break;
         }
 
@@ -125,24 +107,6 @@ void readHandler(Tokenizer* tokenizer)
             TokenType* token = makeToken(tokenString, tokenizer->lineNumber);
             ubaAdd(tokenizer->result, token);
             tokenizer->index++;
-            break;
-        }
-
-        // We get the special singleton tokens "(" and ")"
-        if(isParens(currentChar))
-        {
-            tokenizer->state = TOKEN_DISCARD;
-            // Add the currently built token
-            char* tokenString = makeStringCopy(tokenizer->tokenStart, tokenizer->tokenSize);
-            TokenType* token = makeToken(tokenString, tokenizer->lineNumber);
-            ubaAdd(tokenizer->result, token);
-            // Now add the parent we found
-            char* tokenStart = &tokenizer->code[tokenizer->index];
-            size_t tokenSize = 1;
-            tokenString = makeStringCopy(tokenStart, tokenSize);
-            token = makeToken(tokenString, tokenizer->lineNumber);
-            ubaAdd(tokenizer->result, token);
-            tokenizer->index++; // This is to avoid infinite loops
             break;
         }
 
