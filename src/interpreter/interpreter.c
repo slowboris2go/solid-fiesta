@@ -24,6 +24,38 @@ uint32_t execute(InterpreterState* state, uba* tokens)
         uint32_t param2 = execute(state, tokens);
         return param1 + param2;
     }
+    else if(strcmp(token->token, "-") == 0)
+    {
+        // Get the value of the next two statements and add them
+        state->programIndex++;
+        uint32_t param1 = execute(state, tokens);
+        uint32_t param2 = execute(state, tokens);
+        return param1 - param2;
+    } 
+    else if(strcmp(token->token, "*") == 0)
+    {
+        // Get the value of the next two statements and add them
+        state->programIndex++;
+        uint32_t param1 = execute(state, tokens);
+        uint32_t param2 = execute(state, tokens);
+        return param1 * param2;
+    } 
+    else if(strcmp(token->token, "/") == 0)
+    {
+        // Get the value of the next two statements and add them
+        state->programIndex++;
+        uint32_t param1 = execute(state, tokens);
+        uint32_t param2 = execute(state, tokens);
+        return param1 / param2;
+    } 
+    else if(strcmp(token->token, "%") == 0)
+    {
+        // Get the value of the next two statements and add them
+        state->programIndex++;
+        uint32_t param1 = execute(state, tokens);
+        uint32_t param2 = execute(state, tokens);
+        return param1 % param2;
+    } 
     else
     {
         // Assume a number

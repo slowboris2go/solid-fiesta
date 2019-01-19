@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 {
     if(argc != 2)
     {
-        printf("Usage: lcc filename\n");
+        printf("Usage: expander filename\n");
         return 0;
     }
     // Read file completely
